@@ -1,14 +1,16 @@
 <?php
 
-namespace Spottercommt\XmlGenerator\Controller\Index;
+namespace Spottercommt\XmlGenerator\Cron;
 
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
-use Magento\Store\Model\StoreManagerInterface;
-use Spottercommt\XmlGenerator\Controller\Index\XMLGenerator;
+use \Psr\Log\LoggerInterface;
+use Spottercommt\XmlGenerator\Cron\XMLGenerator;
 
-//class Test extends \Magento\Framework\App\Action\Action
 class Create extends \Magento\Framework\App\Action\Action
 {
+
+    protected $logger;
+
     protected $_pageFactory;
     protected $_productCollectionFactory;
     private $storeManager;
@@ -25,17 +27,34 @@ class Create extends \Magento\Framework\App\Action\Action
 //        \Magento\Framework\Filesystem\DirectoryList $dir,
 //        \Magento\Framework\Filesystem\Io\File $file,
         \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $pageFactory)
+        \Magento\Framework\View\Result\PageFactory $pageFactory,
+        LoggerInterface $logger)
     {
         $this->collection = $collectionFactory;//->create();
         $this->_pageFactory = $pageFactory;
+        $this->logger = $logger;
 //        $this->storeManager = $storeManager;
 //        print_r(get_class_methods($context));
         return parent::__construct($context);
     }
+//    public function __construct(LoggerInterface $logger)
+//    {
+//
+//        $this->logger = $logger;
+//
+//    }
+
+    /**
+     * Write to system.log
+     *
+     * @return void
+     */
 
     public function execute()
     {
+
+        // Do your Stuff
+        $this->logger->info('XML Started');
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $store = $objectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore();
 //        $store = $this->storeManager->getStore();
@@ -102,7 +121,8 @@ class Create extends \Magento\Framework\App\Action\Action
         $directory = $objectManager->get('\Magento\Framework\Filesystem\DirectoryList');
         $rootPath = $directory->getRoot();
         $xml->saveXML($rootPath . '/spotter.xml');
-        echo 'Done';
-        exit;
+        $this->logger->info('XML Finished');
+
+
     }
 }
