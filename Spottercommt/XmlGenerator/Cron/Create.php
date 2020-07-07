@@ -80,6 +80,8 @@ class Create extends \Magento\Framework\App\Action\Action
             $productxml->image = null;
             $productxml->image->addCData($store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $product->getImage());
             $productxml->description = null;
+            $productxml->description->addCData($product['description']);
+
         }
         $directory = $objectManager->get('\Magento\Framework\Filesystem\DirectoryList');
         $rootPath = $directory->getRoot();
